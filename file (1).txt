@@ -1,0 +1,5 @@
+DATABASE_URL=postgresql+asyncpg://postgres:password@localhost:5432/agrointel
+SECRET_KEY=your-super-secret-key-change-in-production
+ALLOWED_ORIGINS=["[localhost](http://localhost:5173)","[your-app.vercel.app](https://your-app.vercel.app)"]
+REDIS_URL=redis://localhost:6379
+OPENAI_API_KEY=sk-...  # Опционально
