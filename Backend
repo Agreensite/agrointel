@@ -1,0 +1,39 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+
+from app.database import create_tables
+from app.routers import auth, fields, analysis, dashboard
+from app.config import settings
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await create_tables()
+    yield
+
+
+app = FastAPI(
+    title="AgroIntel API",
+    description="AI-powered agricultural intelligence platform",
+    version="1.0.0",
+    lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
+app.include_router(fields.router, prefix="/api/fields", tags=["Fields"])
+app.include_router(analysis.router, prefix="/api/analysis", tags=["Analysis"])
+app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"])
+
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "version": "1.0.0"}
